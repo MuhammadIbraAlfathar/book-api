@@ -9,6 +9,11 @@ export class BooksService {
     return this.books;
   }
 
+  getBookById(id: string) {
+    const bookIndex = this.findBookById(id);
+    return this.books[bookIndex];
+  }
+
   createBook(title: string, author: string, category: string) {
     this.books.push({
       id: uuidv4(),

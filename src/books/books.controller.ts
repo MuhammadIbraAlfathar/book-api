@@ -10,6 +10,11 @@ export class BooksController {
     return this.bookService.getAllBooks();
   }
 
+  @Get('/:id')
+  getBookById(@Param('id') id: string) {
+    return this.bookService.getBookById(id);
+  }
+
   @Post()
   createBook(
     @Body('title') title: string,
