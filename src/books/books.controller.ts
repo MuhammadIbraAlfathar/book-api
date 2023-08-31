@@ -1,14 +1,21 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { BooksService } from './books.service';
 
 @Controller('books')
 export class BooksController {
-  @Get('/:name')
-  hello(@Param('name') name: string) {
-    return `Hello ${name}`;
+  constructor(private bookService: BooksService) {}
+
+  @Get()
+  getAllBooks() {
+    return this.bookService.getAllBooks();
   }
 
   @Post()
-  createBook(@Body('name') name: string) {
-    return name;
+  createBook(
+    @Body('title') title: string,
+    @Body('author') author: string,
+    @Body('category') category: string,
+  ) {
+    return this.bookService.createBook(title, author, category);
   }
 }
