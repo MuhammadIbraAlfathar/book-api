@@ -1,13 +1,28 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { BooksService } from './books.service';
+import { title } from 'process';
+import { CreateBookDto } from './dto/create-book.dto';
 
 @Controller('books')
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
   @Get()
-  getAllBooks() {
-    return this.bookService.getAllBooks();
+  getAllBooks(
+    @Query('title') title: string,
+    @Query('author') author: string,
+    @Query('category') category: string,
+  ) {
+    return this.bookService.getAllBooks(title, author, category);
   }
 
   @Get('/:id')
@@ -16,12 +31,8 @@ export class BooksController {
   }
 
   @Post()
-  createBook(
-    @Body('title') title: string,
-    @Body('author') author: string,
-    @Body('category') category: string,
-  ) {
-    return this.bookService.createBook(title, author, category);
+  createBook(@Body('title') payLoad: CreateBookDto) {
+    return this.bookService.createBook(payLoad);
   }
 
   @Put('/:id')
@@ -32,5 +43,10 @@ export class BooksController {
     @Body('category') category: string,
   ) {
     return this.bookService.updateBook(id, title, author, category);
+  }
+
+  @Delete('/:id')
+  deleteBook(@Param('id') id: string) {
+    return this.bookService.deleteBook(id);
   }
 }
