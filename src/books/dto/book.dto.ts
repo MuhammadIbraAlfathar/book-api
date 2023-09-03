@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsInt } from 'class-validator';
 
 export class BooksDto {
@@ -12,5 +13,6 @@ export class BooksDto {
 
   @IsNotEmpty()
   @IsInt()
-  year: string;
+  @Type(() => Number)
+  year: number;
 }
