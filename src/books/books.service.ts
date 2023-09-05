@@ -5,6 +5,7 @@ import { FilterBookDto } from './dto/filter-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BookRepository } from './repository/books.repository';
 import { Book } from './entity/books.entity';
+import { UpdateBookDto } from './dto/update.book.dto';
 
 @Injectable()
 export class BooksService {
@@ -17,6 +18,36 @@ export class BooksService {
     return await this.bookRepository.getAllBooks(filter);
   }
 
+  async createBook(bookDto: BooksDto): Promise<void> {
+    return await this.bookRepository.createBook(bookDto);
+  }
+
+  async getBookById(id: string): Promise<Book> {
+    const book = await this.bookRepository.findOne({ where: { id: id } });
+    if (!book) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
+    return book;
+  }
+
+  async updateBook(id: string, updateBook: UpdateBookDto): Promise<void> {
+    const { title, author, category, year } = updateBook;
+    const book = await this.getBookById(id);
+
+    book.title = title;
+    book.author = author;
+    book.category = category;
+    book.year = year;
+
+    await book.save();
+  }
+
+  async deleteBook(id: string): Promise<void> {
+    const result = await this.bookRepository.delete(id);
+    if (result.affected == 0) {
+      throw new NotFoundException(`Book with id ${id} not found`);
+    }
+  }
   // private books: any[] = [];
 
   // getAllBooks(filter: FilterBookDto): any[] {

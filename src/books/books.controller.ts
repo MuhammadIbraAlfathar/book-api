@@ -14,38 +14,40 @@ import {
 import { BooksService } from './books.service';
 import { BooksDto } from './dto/book.dto';
 import { FilterBookDto } from './dto/filter-book.dto';
+import { Book } from './entity/books.entity';
+import { UpdateBookDto } from './dto/update.book.dto';
 
 @Controller('books')
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
   @Get()
-  getAllBooks(@Query() filter: FilterBookDto) {
+  async getAllBooks(@Query() filter: FilterBookDto): Promise<Book[]> {
     return this.bookService.getBooks(filter);
   }
 
-  // @Get('/:id')
-  // getBookById(@Param('id', ParseUUIDPipe) id: string) {
-  //   return this.bookService.getBookById(id);
-  // }
+  @Get('/:id')
+  getBookById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.bookService.getBookById(id);
+  }
 
-  // @Post()
-  // // digunakan untuk validasi di satu route handler saja
-  // // @UsePipes(ValidationPipe)
-  // createBook(@Body() payLoad: BooksDto) {
-  //   return this.bookService.createBook(payLoad);
-  // }
+  @Post()
+  // digunakan untuk validasi di satu route handler saja
+  // @UsePipes(ValidationPipe)
+  async createBook(@Body() payLoad: BooksDto): Promise<void> {
+    return this.bookService.createBook(payLoad);
+  }
 
-  // @Put('/:id')
-  // updateBook(
-  //   @Param('id', ParseUUIDPipe) id: string,
-  //   @Body() payload: BooksDto,
-  // ) {
-  //   return this.bookService.updateBook(id, payload);
-  // }
+  @Put('/:id')
+  async updateBook(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() payload: UpdateBookDto,
+  ): Promise<void> {
+    return this.bookService.updateBook(id, payload);
+  }
 
-  // @Delete('/:id')
-  // deleteBook(@Param('id', ParseUUIDPipe) id: string) {
-  //   return this.bookService.deleteBook(id);
-  // }
+  @Delete('/:id')
+  async deleteBook(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return this.bookService.deleteBook(id);
+  }
 }

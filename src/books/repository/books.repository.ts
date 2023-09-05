@@ -1,7 +1,12 @@
 import { DataSource, EntityRepository, Repository } from 'typeorm';
 import { FilterBookDto } from '../dto/filter-book.dto';
 import { Book } from '../entity/books.entity';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { BooksDto } from '../dto/book.dto';
 
 @Injectable()
 export class BookRepository extends Repository<Book> {
@@ -40,6 +45,35 @@ export class BookRepository extends Repository<Book> {
       query.andWhere('book.year <= max_year', { max_year });
     }
 
-    return await query.getMany();
+    const books = await query.getMany();
+
+    if (books.length === 0) {
+      throw new NotFoundException('Data Not Found');
+    }
+
+    return books;
   }
+
+  async createBook(bookDto: BooksDto): Promise<void> {
+    const { title, author, year, category } = bookDto;
+    const book = this.create();
+
+    book.title = title;
+    book.author = author;
+    book.category = category;
+    book.year = year;
+    book.createdAt = new Date();
+    book.updatedAt = new Date();
+
+    try {
+      await book.save();
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  //   async updateBook(id: string, bookDto: BooksDto): Promise<void> {
+  //     const {title, author, year, category} = bookDto;
+  //     const book = this.createQueryBuilder()
+  //   }
 }
