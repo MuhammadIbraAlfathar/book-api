@@ -4,7 +4,7 @@ import { FilterBookDto } from '../dto/filter-book.dto';
 
 @EntityRepository(Book)
 export class BookRepository extends Repository<Book> {
-  async getBooks(filter: FilterBookDto): Promise<Book[]> {
+  async getAllBooks(filter: FilterBookDto): Promise<Book[]> {
     const { title, author, category, min_year, max_year } = filter;
 
     const query = this.createQueryBuilder('book');

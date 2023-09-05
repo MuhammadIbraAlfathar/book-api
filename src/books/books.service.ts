@@ -14,7 +14,7 @@ export class BooksService {
   ) {}
 
   async getBooks(filter: FilterBookDto): Promise<Book[]> {
-    return await this.bookRepository.getBooks(filter);
+    return await this.bookRepository.getAllBooks(filter);
   }
 
   // private books: any[] = [];
