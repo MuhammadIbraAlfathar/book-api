@@ -1,9 +1,14 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { DataSource, EntityRepository, Repository } from 'typeorm';
 import { FilterBookDto } from '../dto/filter-book.dto';
 import { Book } from '../entity/books.entity';
+import { Injectable } from '@nestjs/common';
 
-@EntityRepository(Book)
+@Injectable()
 export class BookRepository extends Repository<Book> {
+  constructor(private dataSource: DataSource) {
+    super(Book, dataSource.createEntityManager());
+  }
+
   async getAllBooks(filter: FilterBookDto): Promise<Book[]> {
     const { title, author, category, min_year, max_year } = filter;
 
