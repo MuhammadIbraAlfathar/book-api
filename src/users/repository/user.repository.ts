@@ -17,6 +17,12 @@ export class UserRepository extends Repository<User> {
     user.name = name;
     user.email = email;
     user.salt = await bycrypt.genSalt();
-    user.password = password;
+    user.password = await bycrypt.hash(password, user.salt);
+
+    try {
+      await user.save();
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 }
