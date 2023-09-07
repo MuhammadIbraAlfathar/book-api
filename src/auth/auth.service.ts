@@ -45,7 +45,7 @@ export class AuthService {
   async createRefreshToken(user: User): Promise<string> {
     const refreshToken = await this.refreshTokenRepository.createRefreshToken(
       user,
-      36000 * 24,
+      3600 * 24,
     );
 
     const payload = {
