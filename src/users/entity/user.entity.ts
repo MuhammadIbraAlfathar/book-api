@@ -1,5 +1,12 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bycript from 'bcrypt';
+import { RefreshToken } from 'src/auth/entity/refresh-token.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -17,6 +24,11 @@ export class User extends BaseEntity {
 
   @Column()
   salt: string;
+
+  @OneToMany(() => RefreshToken, (refresToken) => refresToken.user, {
+    eager: true,
+  })
+  refreshToken: RefreshToken[];
 
   async validatePassword(password: string): Promise<Boolean> {
     const hash = await bycript.hash(password, this.salt);
