@@ -5,7 +5,7 @@ import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
 export class RefreshTokenRepository extends Repository<RefreshToken> {
-  constructor(private dataSource: DataSource) {
+  constructor(private readonly dataSource: DataSource) {
     super(RefreshToken, dataSource.createEntityManager());
   }
   async createRefreshToken(user: User, ttl: number): Promise<RefreshToken> {

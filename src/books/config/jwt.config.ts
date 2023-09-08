@@ -8,5 +8,5 @@ export const jwtConfig: JwtModuleOptions = {
 };
 
 export const refreshTokenConfig: JwtSignOptions = {
-  expiresIn: 36000 * 24,
+  expiresIn: 3600 * 24,
 };

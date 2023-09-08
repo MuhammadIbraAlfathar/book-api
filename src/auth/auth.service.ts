@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { LoginResponse } from './interface/login-response.interface';
@@ -7,6 +11,8 @@ import { User } from 'src/users/entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RefreshTokenRepository } from './repository/refresh-token.repository';
 import { refreshTokenConfig } from 'src/books/config/jwt.config';
+import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -30,6 +36,40 @@ export class AuthService {
     const refresh_token = await this.createRefreshToken(user);
 
     return { access_token, refresh_token } as LoginResponse;
+  }
+
+  async refreshAccessToken(
+    refreshToken: RefreshAccessTokenDto,
+  ): Promise<{ access_token: string }> {
+    const { refresh_token } = refreshToken;
+    const payload = await this.decodeToken(refresh_token);
+    const findToken = await this.refreshTokenRepository.findOne({
+      where: { id: payload.jid },
+      relations: { user: true },
+    });
+
+    if (!findToken) {
+      throw new UnauthorizedException('Refresh token is not found');
+    }
+
+    if (findToken.isRevoked) {
+      throw new UnauthorizedException('Refresh token has been revoked');
+    }
+
+    const access_token = await this.createAccessToken(findToken.user);
+    return { access_token };
+  }
+
+  async decodeToken(token: string): Promise<any> {
+    try {
+      return await this.jwtService.verifyAsync(token);
+    } catch (e) {
+      if (e instanceof TokenExpiredError) {
+        throw new UnauthorizedException('Refresh token is expired');
+      } else {
+        throw new InternalServerErrorException('Failed to decode token');
+      }
+    }
   }
 
   async createAccessToken(user: User): Promise<string> {
