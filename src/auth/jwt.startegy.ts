@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { jwtConfig } from 'src/books/config/jwt.config';
@@ -12,5 +12,13 @@ export class JwtStartegy extends PassportStrategy(Strategy) {
       ignoreExpiration: true,
       secretOrKey: jwtConfig.secret,
     });
+  }
+
+  async validate(payLoad: any) {
+    const user = await this.userService.findUserById(payLoad.sub);
+    if (!user) {
+      throw new NotFoundException('User Not Found');
+    }
+    return user;
   }
 }
