@@ -8,6 +8,8 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -16,13 +18,19 @@ import { BooksDto } from './dto/book.dto';
 import { FilterBookDto } from './dto/filter-book.dto';
 import { Book } from './entity/books.entity';
 import { UpdateBookDto } from './dto/update.book.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('books')
+@UseGuards(AuthGuard('jwt'))
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
   @Get()
-  async getAllBooks(@Query() filter: FilterBookDto): Promise<Book[]> {
+  async getAllBooks(
+    @Query() filter: FilterBookDto,
+    @Req() req,
+  ): Promise<Book[]> {
+    console.log(req);
     return this.bookService.getBooks(filter);
   }
 
