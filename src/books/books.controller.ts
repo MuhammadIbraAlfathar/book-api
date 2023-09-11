@@ -19,6 +19,8 @@ import { FilterBookDto } from './dto/filter-book.dto';
 import { Book } from './entity/books.entity';
 import { UpdateBookDto } from './dto/update.book.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/users/entity/user.entity';
 
 @Controller('books')
 @UseGuards(AuthGuard('jwt'))
@@ -28,9 +30,9 @@ export class BooksController {
   @Get()
   async getAllBooks(
     @Query() filter: FilterBookDto,
-    @Req() req,
+    @GetUser() user: User,
   ): Promise<Book[]> {
-    console.log(req);
+    console.log(user);
     return this.bookService.getBooks(filter);
   }
 
