@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import * as bycript from 'bcrypt';
 import { RefreshToken } from 'src/auth/entity/refresh-token.entity';
+import { Book } from 'src/books/entity/books.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -29,6 +30,9 @@ export class User extends BaseEntity {
     eager: true,
   })
   refreshToken: RefreshToken[];
+
+  @OneToMany(() => Book, (book) => book.user)
+  books: Book[];
 
   async validatePassword(password: string): Promise<Boolean> {
     const hash = await bycript.hash(password, this.salt);
