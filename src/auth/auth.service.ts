@@ -99,4 +99,14 @@ export class AuthService {
 
     return refresh_token;
   }
+
+  async revokeRefreshToken(id: string): Promise<void> {
+    const refreshToken = await this.refreshTokenRepository.findOne({
+      where: { id: id },
+    });
+
+    refreshToken.isRevoked = true;
+
+    refreshToken.save();
+  }
 }

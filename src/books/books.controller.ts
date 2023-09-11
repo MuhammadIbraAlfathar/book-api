@@ -8,10 +8,7 @@ import {
   Post,
   Put,
   Query,
-  Req,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { BooksDto } from './dto/book.dto';
