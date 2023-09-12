@@ -12,7 +12,5 @@ export class BooksDto {
   category: string;
 
   @IsNotEmpty()
-  @IsInt()
-  @Type(() => Number)
   year: number;
 }

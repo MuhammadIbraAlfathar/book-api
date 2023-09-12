@@ -14,14 +14,15 @@ import {
 import { BooksService } from './books.service';
 import { BooksDto } from './dto/book.dto';
 import { FilterBookDto } from './dto/filter-book.dto';
+import { UpdateBook } from './dto/update-book.dto';
 
 @Controller('books')
 export class BooksController {
   constructor(private bookService: BooksService) {}
 
   @Get()
-  getAllBooks(@Query() filter: FilterBookDto) {
-    return this.bookService.getAllBooks(filter);
+  getAllBooks() {
+    return this.bookService.getAllBook();
   }
 
   @Get('/:id')
@@ -39,7 +40,7 @@ export class BooksController {
   @Put('/:id')
   updateBook(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() payload: BooksDto,
+    @Body() payload: UpdateBook,
   ) {
     return this.bookService.updateBook(id, payload);
   }
