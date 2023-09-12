@@ -29,8 +29,7 @@ export class BooksController {
     @Query() filter: FilterBookDto,
     @GetUser() user: User,
   ): Promise<Book[]> {
-    console.log(user);
-    return this.bookService.getBooks(filter);
+    return this.bookService.getBooks(user, filter);
   }
 
   @Get('/:id')
@@ -41,8 +40,11 @@ export class BooksController {
   @Post()
   // digunakan untuk validasi di satu route handler saja
   // @UsePipes(ValidationPipe)
-  async createBook(@Body() payLoad: BooksDto): Promise<void> {
-    return this.bookService.createBook(payLoad);
+  async createBook(
+    @GetUser() user: User,
+    @Body() payLoad: BooksDto,
+  ): Promise<void> {
+    return this.bookService.createBook(user, payLoad);
   }
 
   @Put('/:id')

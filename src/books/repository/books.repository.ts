@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { BooksDto } from '../dto/book.dto';
+import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
 export class BookRepository extends Repository<Book> {
@@ -14,10 +15,13 @@ export class BookRepository extends Repository<Book> {
     super(Book, dataSource.createEntityManager());
   }
 
-  async getAllBooks(filter: FilterBookDto): Promise<Book[]> {
+  async getAllBooks(user: User, filter: FilterBookDto): Promise<Book[]> {
     const { title, author, category, min_year, max_year } = filter;
 
-    const query = this.createQueryBuilder('book');
+    const query = this.createQueryBuilder('book').where(
+      'book.userId = :userId',
+      { userId: user.id },
+    );
 
     if (title) {
       query.andWhere('lower(book.title) LIKE :title', {
@@ -54,7 +58,7 @@ export class BookRepository extends Repository<Book> {
     return books;
   }
 
-  async createBook(bookDto: BooksDto): Promise<void> {
+  async createBook(user: User, bookDto: BooksDto): Promise<void> {
     const { title, author, year, category } = bookDto;
     const book = this.create();
 
@@ -64,6 +68,7 @@ export class BookRepository extends Repository<Book> {
     book.year = year;
     book.createdAt = new Date();
     book.updatedAt = new Date();
+    book.user = user;
 
     try {
       await book.save();
