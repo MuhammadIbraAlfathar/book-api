@@ -4,6 +4,7 @@ import { BooksService } from './books.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BookSchema, Books } from './schemas/books.schema';
 import { BookRepository } from './repository/book.repository';
+import { Model } from 'mongoose';
 
 @Module({
   imports: [
