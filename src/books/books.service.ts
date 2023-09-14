@@ -23,9 +23,9 @@ export class BooksService {
     return await this.bookRepository.createBook(user, bookDto);
   }
 
-  async getBookById(userInfo: User, id: string): Promise<Book> {
+  async getBookById(id: string): Promise<Book> {
     const book = await this.bookRepository.findOne({
-      where: { id: id, user: userInfo.books },
+      where: { id: id },
     });
     if (!book) {
       throw new NotFoundException(`Book with id ${id} not found`);
